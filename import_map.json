@@ -1,0 +1,5 @@
+{
+  "imports": {
+    "ts_morph/": "https://deno.land/x/ts_morph@14.0.0/"
+  }
+}
