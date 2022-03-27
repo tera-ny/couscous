@@ -1,4 +1,4 @@
-import { walkSync, WalkEntry } from "fs";
+import { walkSync, WalkEntry } from "https://deno.land/std@0.130.0/fs/mod.ts";
 
 const reservedPath = ["_app.tsx", "_document.tsx"];
 

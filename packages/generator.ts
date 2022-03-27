@@ -1,4 +1,4 @@
-import { FunctionDeclaration } from "ts_morph";
+import { FunctionDeclaration } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
 import type { Route } from "./type.ts";
 
 export const addEntryOverloads = (

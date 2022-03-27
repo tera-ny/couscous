@@ -1,10 +1,13 @@
-import { Project, SourceFile } from "ts_morph";
-import { parse as parseArg } from "flags";
+import {
+  Project,
+  SourceFile,
+} from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
+import { parse as parseArg } from "https://deno.land/std@0.130.0/flags/mod.ts";
 import { walkAround } from "./visitor.ts";
 import { pickRoute } from "./gleaner.ts";
 import { addEntryOverloads, addRoutesHandler } from "./generator.ts";
 import { Route } from "./type.ts";
-import { ensureFileSync } from "fs";
+import { ensureFileSync } from "https://deno.land/std@0.130.0/fs/mod.ts";
 import {
   RouteOptionStructure,
   RouteFunctionStructure,

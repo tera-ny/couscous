@@ -1,5 +1,5 @@
-import type { WalkEntry } from "fs";
-import { parse as parsePath } from "path";
+import type { WalkEntry } from "https://deno.land/std@0.130.0/fs/mod.ts";
+import { parse as parsePath } from "https://deno.land/std@0.130.0/path/mod.ts";
 import type { Route } from "./type.ts";
 
 export const pickRoute = (root: string, entry: WalkEntry): Route => {

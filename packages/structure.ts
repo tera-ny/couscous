@@ -3,7 +3,7 @@ import {
   FunctionDeclarationStructure,
   TypeAliasDeclarationStructure,
   StructureKind,
-} from "ts_morph";
+} from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
 import { Route } from "./type.ts";
 
 export const RouteOptionStructure: InterfaceDeclarationStructure = {
