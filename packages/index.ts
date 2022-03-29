@@ -4,7 +4,7 @@ import {
 } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
 import { parse as parseArg } from "https://deno.land/std@0.130.0/flags/mod.ts";
 import { walkAround } from "./visitor.ts";
-import { pickRoute } from "./gleaner.ts";
+import { pickRoute } from "./converter.ts";
 import { addEntryOverloads, addRoutesHandler } from "./generator.ts";
 import { Route } from "./type.ts";
 import { ensureFileSync } from "https://deno.land/std@0.130.0/fs/mod.ts";
