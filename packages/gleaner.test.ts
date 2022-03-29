@@ -57,6 +57,10 @@ Deno.test("[gleaner]convertToTemplate", () => {
       original: "/hoge/[id]",
       expected: "/hoge/${id}",
     },
+    {
+      original: "/hoge/[id]/[id]",
+      expected: "/hoge/${id}/${id}",
+    },
   ];
   testCases.forEach((testcase) => {
     assertEquals<string>(
