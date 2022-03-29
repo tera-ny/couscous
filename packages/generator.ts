@@ -31,7 +31,7 @@ export const addRoutesHandler = (
     writer.write("switch (identity)").block(() => {
       routes.forEach((route) => {
         writer.writeLine(`case "${route.identity}":`);
-        writer.indent(() => {
+        writer.block(() => {
           route.query.forEach((key, index) => {
             writer.writeLine(`const ${key} = args[${index}];`);
           });
