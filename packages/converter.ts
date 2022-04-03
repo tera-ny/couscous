@@ -3,28 +3,44 @@ import { parse as parsePath } from "https://deno.land/std@0.130.0/path/mod.ts";
 import type { Route } from "./type.ts";
 import { assertEquals } from "https://deno.land/std@0.132.0/testing/asserts.ts";
 
-export const convertToTemplate = (original: string): string => {
-  return original.replaceAll("[", "${").replaceAll("]", "}");
-};
-
-export const pickRoute = (root: string, entry: WalkEntry): Route => {
+const generateBase = (root: string, entry: WalkEntry): string => {
   const parsed = parsePath(entry.path);
   const base = [
     parsed.dir.replace(new RegExp(`^${root}`), ""),
     parsed.name !== "index" ? `${parsed.name}/` : "",
   ].join("/");
-  const query = [...base.matchAll(/\[(\w+)\]/g)].map((val) => val[1]) ?? [];
+  return base;
+};
+
+const convertToTemplate = (original: string): string => {
+  return original.replaceAll("[", "${").replaceAll("]", "}");
+};
+
+const pickQueries = (path: string) =>
+  [...path.matchAll(/\[(\w+)\]/g)]
+    .map((val) => val[1])
+    .filter((val, index, self) => self.indexOf(val) === index) ?? [];
+/**
+ *
+ * @param root Relative path of the directory to be searched by visitor
+ * @param entry Entry retrieved by visitor
+ * @returns Alternative types for entry that can be handled by generator
+ */
+export const convertToRoute = (root: string, entry: WalkEntry): Route => {
+  const base = generateBase(root, entry);
+  const template = convertToTemplate(base);
+  const query = pickQueries(base);
 
   return {
     identity: base,
-    template: convertToTemplate(base),
+    template,
     query,
   };
 };
 
-Deno.test("[converter]pickRoute", () => {
+Deno.test("[converter]convertToRoute", () => {
   assertEquals<Route>(
-    pickRoute("pages", {
+    convertToRoute("pages", {
       path: "pages/index.ts",
       name: "index.ts",
       isDirectory: false,
@@ -38,7 +54,7 @@ Deno.test("[converter]pickRoute", () => {
     }
   );
   assertEquals<Route>(
-    pickRoute("pages", {
+    convertToRoute("pages", {
       path: "pages/fuga.ts",
       name: "fuga.ts",
       isDirectory: false,
@@ -52,7 +68,7 @@ Deno.test("[converter]pickRoute", () => {
     }
   );
   assertEquals<Route>(
-    pickRoute("pages", {
+    convertToRoute("pages", {
       path: "pages/fuga/index.ts",
       name: "index.ts",
       isDirectory: false,
@@ -87,5 +103,19 @@ Deno.test("[converter]convertToTemplate", () => {
       convertToTemplate(testcase.original),
       testcase.expected
     );
+  });
+});
+
+Deno.test("[converter]pickQueries", () => {
+  const testCases: { path: string; expected: string[] }[] = [
+    { path: "", expected: [] },
+    { path: "[id]", expected: ["id"] },
+    { path: "[piyo]/[hoge]", expected: ["piyo", "hoge"] },
+    { path: "[piyo]/[piyo]", expected: ["piyo"] },
+    { path: "[piyo]/[piyo]/[piyo]", expected: ["piyo"] },
+    { path: "[piyo]/[hoge]/[piyo]", expected: ["piyo", "hoge"] },
+  ];
+  testCases.forEach((testcase) => {
+    assertEquals<string[]>(pickQueries(testcase.path), testcase.expected);
   });
 });
