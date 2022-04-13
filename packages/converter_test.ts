@@ -1,6 +1,52 @@
+import type { WalkEntry } from "https://deno.land/std@0.130.0/fs/mod.ts";
 import { assertEquals } from "https://deno.land/std@0.132.0/testing/asserts.ts";
-import type { TestCase } from "./_helper/testcase.ts";
-import { convertToRoute, convertToTemplate, pickQueries } from "./converter.ts";
+import type { TestCase } from "./_test_helper/testcase.ts";
+import {
+  convertToBase,
+  convertToRoute,
+  convertToTemplate,
+  convertToDynamicParam,
+} from "./converter.ts";
+
+Deno.test("convertToBase", () => {
+  const baseEntry: Omit<WalkEntry, "name" | "path"> = {
+    isDirectory: false,
+    isFile: true,
+    isSymlink: false,
+  };
+  const testCases: TestCase<typeof convertToBase>[] = [
+    ["pages", { ...baseEntry, name: "index.ts", path: "pages/index.ts" }, "/"],
+  ];
+  testCases.forEach((testcase) => {
+    assertEquals(convertToBase(testcase[0], testcase[1]), testcase[2]);
+  });
+});
+
+Deno.test("convertToDynamicParam", () => {
+  const testCases: TestCase<typeof convertToDynamicParam>[] = [
+    ["", undefined],
+    ["hoge", undefined],
+    ["[id]", { type: "param", name: "id" }],
+    ["[...slug]", { type: "rest", name: "slug", isOptional: false }],
+    ["[[...foo]]", { type: "rest", name: "foo", isOptional: true }],
+  ];
+  testCases.forEach((testcase) =>
+    assertEquals(convertToDynamicParam(testcase[0]), testcase[1])
+  );
+});
+
+Deno.test("convertToTemplate", () => {
+  const testCases: TestCase<typeof convertToTemplate>[] = [
+    ["/", "/"],
+    ["/hoge/[id]", "/hoge/${id}"],
+    ["/hoge/[id]/[id]", "/hoge/${id}/${id}"],
+    ["/hoge/[...slug]", '/hoge/${slug.join("/")}'],
+    ["/hoge/[[...rest]]", '/hoge/${rest.join("/")}'],
+  ];
+  testCases.forEach((testcase) => {
+    assertEquals<string>(convertToTemplate(testcase[0]), testcase[1]);
+  });
+});
 
 Deno.test("convertToRoute", () => {
   const testCases: TestCase<typeof convertToRoute>[] = [
@@ -13,7 +59,7 @@ Deno.test("convertToRoute", () => {
         isFile: true,
         isSymlink: false,
       },
-      { identity: "/", template: "/", query: [] },
+      { identity: "/", template: "/", params: [] },
     ],
     [
       "pages",
@@ -27,7 +73,7 @@ Deno.test("convertToRoute", () => {
       {
         identity: "/fuga/",
         template: "/fuga/",
-        query: [],
+        params: [],
       },
     ],
     [
@@ -42,36 +88,32 @@ Deno.test("convertToRoute", () => {
       {
         identity: "/fuga/",
         template: "/fuga/",
-        query: [],
+        params: [],
+      },
+    ],
+    [
+      "pages",
+      {
+        path: "pages/fuga/[...slug].ts",
+        name: "[...slug].ts",
+        isDirectory: false,
+        isFile: true,
+        isSymlink: false,
+      },
+      {
+        identity: "/fuga/[...slug]/",
+        template: '/fuga/${slug.join("/")}/',
+        params: [
+          {
+            type: "rest",
+            name: "slug",
+            isOptional: false,
+          },
+        ],
       },
     ],
   ];
   testCases.forEach((testcase) => {
     assertEquals(convertToRoute(testcase[0], testcase[1]), testcase[2]);
-  });
-});
-
-Deno.test("convertToTemplate", () => {
-  const testCases: TestCase<typeof convertToTemplate>[] = [
-    ["/", "/"],
-    ["/hoge/[id]", "/hoge/${id}"],
-    ["/hoge/[id]/[id]", "/hoge/${id}/${id}"],
-  ];
-  testCases.forEach((testcase) => {
-    assertEquals<string>(convertToTemplate(testcase[0]), testcase[1]);
-  });
-});
-
-Deno.test("pickQueries", () => {
-  const testCases: TestCase<typeof pickQueries>[] = [
-    ["", []],
-    ["[id]", ["id"]],
-    ["[piyo]/[hoge]", ["piyo", "hoge"]],
-    ["[piyo]/[piyo]", ["piyo"]],
-    ["[piyo]/[piyo]/[piyo]", ["piyo"]],
-    ["[piyo]/[hoge]/[piyo]", ["piyo", "hoge"]],
-  ];
-  testCases.forEach((testcase) => {
-    assertEquals<string[]>(pickQueries(testcase[0]), testcase[1]);
   });
 });
