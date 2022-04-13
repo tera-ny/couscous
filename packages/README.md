@@ -5,19 +5,23 @@ Couscous is a utility tool for next.js that automatically generates route functi
 ## Usage
 
 `deno run --allow-read --allow-write https://deno.land/x/couscous/index.ts utils/route/generated.ts`
+
 #### options
- - `-t <path>` tsconfig path. default `tsconfig.json`
- - `-r <path>` page root. default  `pages`
+
+- `-t <path>` tsconfig path. default `tsconfig.json`
+- `-r <path>` page root. default `pages`
 
 ## Example
 
 ### directory structure
- - `/index.tsx`
- - `/users/[id]/index.tsx`
- - `/api/hello.ts`
- - `/users/[items].tsx`
+
+- `/index.tsx`
+- `/users/[id]/index.tsx`
+- `/api/hello.ts`
+- `/users/[items].tsx`
 
 ### output
+
 ```typescript:generated.ts
 interface RouteOption {
   query?: { [key: string]: string };
@@ -74,3 +78,13 @@ export function route(
 }
 
 ```
+
+## Contributing
+
+### testing with snapshot test
+
+need to specify the flag
+`deno test <target file> --allow-write --allow-read`
+
+update snapshot test case
+`deno test <target file> --allow-write --allow-read -- update_snapshot`

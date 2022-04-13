@@ -1,8 +1,9 @@
 import type { WalkEntry } from "https://deno.land/std@0.130.0/fs/mod.ts";
 import { parse as parsePath } from "https://deno.land/std@0.130.0/path/mod.ts";
-import type { Route } from "./type.ts";
+import type { Route, DynamicParam } from "./type.ts";
+import { parseToDynamicParams } from "./parser.ts";
 
-export const generateBase = (root: string, entry: WalkEntry): string => {
+export const convertToBase = (root: string, entry: WalkEntry): string => {
   const parsed = parsePath(entry.path);
   const base = [
     parsed.dir.replace(new RegExp(`^${root}`), ""),
@@ -11,14 +12,45 @@ export const generateBase = (root: string, entry: WalkEntry): string => {
   return base;
 };
 
-export const convertToTemplate = (original: string): string => {
-  return original.replaceAll("[", "${").replaceAll("]", "}");
+export const convertToDynamicParam = (
+  name: string
+): DynamicParam | undefined => {
+  const restWithOptional = name.match(/^\[{2}\.{3}(\w+)\]{2}$/);
+  if (restWithOptional) {
+    return {
+      type: "rest",
+      name: restWithOptional[1],
+      isOptional: true,
+    };
+  }
+  const rest = name.match(/^\[\.{3}(\w+)\]$/);
+  if (rest) {
+    return {
+      type: "rest",
+      name: rest[1],
+      isOptional: false,
+    };
+  }
+  const key = name.match(/^\[(\w+)\]$/);
+  if (key) {
+    return {
+      type: "param",
+      name: key[1],
+    };
+  } else {
+    return undefined;
+  }
 };
 
-export const pickQueries = (path: string) =>
-  [...path.matchAll(/\[(\w+)\]/g)]
-    .map((val) => val[1])
-    .filter((val, index, self) => self.indexOf(val) === index) ?? [];
+export const convertToTemplate = (original: string): string =>
+  original
+    .replaceAll(
+      /\[{2}\.{3}(\w+)\]{2}/g,
+      (_, name) => "${" + name + '.join("/")}'
+    )
+    .replaceAll(/\[\.{3}(\w+)\]/g, (_, name) => "${" + name + '.join("/")}')
+    .replaceAll(/\[(\w+)\]/g, (_, name) => "${" + name + "}");
+
 /**
  *
  * @param root Relative path of the directory to be searched by visitor
@@ -26,13 +58,12 @@ export const pickQueries = (path: string) =>
  * @returns Alternative types for entry that can be handled by generator
  */
 export const convertToRoute = (root: string, entry: WalkEntry): Route => {
-  const base = generateBase(root, entry);
+  const base = convertToBase(root, entry);
   const template = convertToTemplate(base);
-  const query = pickQueries(base);
-
+  const params = parseToDynamicParams(base);
   return {
     identity: base,
     template,
-    query,
+    params,
   };
 };
