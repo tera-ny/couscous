@@ -1,3 +1,4 @@
+function route(identity: "/fuga", option?: RouteOption): string;
 function route(identity: "/hoge/[hoge]", hoge: string, option?: RouteOption): string;
 function route(identity: "/piyo/[...slug]", slug: string[], option?: RouteOption): string;
 function route(identity: "/foo/[foo]/[...bar]", foo: string, bar: string[], option?: RouteOption): string;
