@@ -31,7 +31,7 @@ export const RouteFunctionStructure: FunctionDeclarationStructure = {
     { name: "identity", type: "Identity" },
     {
       name: "...args",
-      type: "(string | RouteOption | undefined)[]",
+      type: "(string | string[] | RouteOption | undefined)[]",
     },
   ],
 };

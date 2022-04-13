@@ -39,7 +39,16 @@ export const addRoutesHandler = (
         writer.writeLine(`case "${route.identity}":`);
         writer.block(() => {
           route.params.forEach((key, index) => {
-            writer.writeLine(`const ${key} = args[${index}];`);
+            switch (key.type) {
+              case "param":
+                writer.writeLine(`const ${key.name} = args[${index}];`);
+                break;
+              case "rest":
+                writer.writeLine(
+                  `const ${key.name} = args[${index}] as string[]`
+                );
+                break;
+            }
           });
           writer.writeLine("path = `" + route.template + "`;");
           const optionIndex = route.params.length;
