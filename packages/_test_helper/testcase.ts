@@ -1,4 +1,3 @@
-export type TestCase<U extends (...args: any) => any> = [
-  ...Parameters<U>,
-  ReturnType<U>
-];
+export type TestCase<T> = T extends (...args: infer A) => infer R
+  ? [...A, R]
+  : never;
