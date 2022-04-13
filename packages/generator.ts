@@ -1,6 +1,9 @@
 import { FunctionDeclaration } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
 import type { Route } from "./type.ts";
 
+const toType = (type: "param" | "rest") =>
+  type === "param" ? "string" : "string[]";
+
 export const addEntryOverloads = (
   routes: Route[],
   constructor: FunctionDeclaration
@@ -9,7 +12,10 @@ export const addEntryOverloads = (
     routes.map((route) => ({
       parameters: [
         { name: "identity", type: `"${route.identity}"` },
-        ...route.query.map((key) => ({ name: key, type: "string" })),
+        ...route.params.map((parameter) => ({
+          name: parameter.name,
+          type: toType(parameter.type),
+        })),
         {
           name: "option",
           hasQuestionToken: true,
@@ -32,11 +38,11 @@ export const addRoutesHandler = (
       routes.forEach((route) => {
         writer.writeLine(`case "${route.identity}":`);
         writer.block(() => {
-          route.query.forEach((key, index) => {
+          route.params.forEach((key, index) => {
             writer.writeLine(`const ${key} = args[${index}];`);
           });
           writer.writeLine("path = `" + route.template + "`;");
-          const optionIndex = route.query.length;
+          const optionIndex = route.params.length;
           writer.writeLine(`index = ${optionIndex};`);
           writer.write("break;");
         });
