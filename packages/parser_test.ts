@@ -1,6 +1,6 @@
 import { parseToDynamicParams as parse } from "./parser.ts";
 import { assertEquals } from "https://deno.land/std@0.132.0/testing/asserts.ts";
-import { DynamicParam } from "./type.ts";
+import type { DynamicParam } from "./type.ts";
 
 Deno.test("parser", async (context) => {
   await context.step("parseToDynamicParams", () => {
