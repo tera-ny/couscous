@@ -16,8 +16,8 @@ export const RouteOptionStructure: InterfaceDeclarationStructure = {
       hasQuestionToken: true,
     },
     {
-      name: "hash",
-      type: "`#${string}`",
+      name: "fragment",
+      type: "string",
       hasQuestionToken: true,
     },
   ],
