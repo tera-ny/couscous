@@ -1,3 +1,0 @@
-function toSearch(searchParams: URLSearchParams): string {
-  return searchParams.toString() ? "?" + searchParams.toString() : "";
-}
