@@ -1,0 +1,1 @@
+type Identity = "foo" | "bar" | "hoge" | "piyo" | "fuga/${id}";
