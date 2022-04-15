@@ -36,6 +36,6 @@ test("addEntryOverloads", async (source) => {
   await source.save();
   await assertSnapshot(
     source.getFilePath(),
-    "_snapshots/generator_test_case0.snapshot"
+    "./_snapshots/generator_test_case0.snapshot"
   );
 });
