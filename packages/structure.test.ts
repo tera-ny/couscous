@@ -27,7 +27,3 @@ test("IdentityType with snapshot", async (source) => {
     "_snapshots/structure_test_identitytype.snapshot"
   );
 });
-
-Deno.test(() => {
-  throw "error";
-});
