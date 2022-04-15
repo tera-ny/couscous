@@ -3,7 +3,7 @@ import { test } from "./_test_helper/fileSystem.ts";
 import { assertSnapshot } from "./_test_helper/equal.ts";
 import { addEntryOverloads } from "./generator.ts";
 
-test("addEntryOverloads", async (source) => {
+test("addEntryOverloads with snapshot", async (source) => {
   const constructor = source.addFunction({
     name: "route",
     kind: StructureKind.Function,
