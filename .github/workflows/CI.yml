@@ -9,6 +9,8 @@
 name: CI
 
 on:
+  push:
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -22,8 +24,6 @@ jobs:
     steps:
       - name: Setup repo
         uses: actions/checkout@v3
-      - run: cd packages
-      - run: ls
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         # uses: denoland/setup-deno@004814556e37c54a2f6e31384c9e18e983317366
@@ -37,5 +37,6 @@ jobs:
       - name: Run linter
         run: deno lint
 
-      - name: Run tests
-        run: deno test -A --unstable --allow-write --allow-read
+      - name: Run tests at packages
+      # Need to work with packages directory to resolve snapshot test paths
+        run: cd packages && deno test -A --unstable --allow-write --allow-read
