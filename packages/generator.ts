@@ -33,7 +33,7 @@ export const addRoutesHandler = (
 ) => {
   routesHandler.addStatements((writer) => {
     writer.writeLine("let path: string;");
-    writer.writeLine("let index: number;");
+    writer.writeLine("let optionIndex: number;");
     writer.write("switch (identity)").block(() => {
       routes.forEach((route) => {
         writer.writeLine(`case "${route.identity}":`);
@@ -52,19 +52,17 @@ export const addRoutesHandler = (
           });
           writer.writeLine("path = `" + route.template + "`;");
           const optionIndex = route.params.length;
-          writer.writeLine(`index = ${optionIndex};`);
+          writer.writeLine(`optionIndex = ${optionIndex};`);
           writer.write("break;");
         });
       });
     });
     writer.writeLine(
-      "const option = args[index] as (RouteOption | undefined);"
+      "const option = args[optionIndex] as (RouteOption | undefined);"
     );
+    writer.writeLine("const query = new URLSearchParams(option?.query ?? {});");
     writer.writeLine(
-      "const searchParams = new URLSearchParams(option?.query ?? {});"
-    );
-    writer.writeLine(
-      "return `${path}${toSearch(searchParams)}${option?.hash}`"
+      'return `${path}${query.toString() && "?" + query.toString}${option?.fragment && "#" + option.fragment}`'
     );
   });
 };

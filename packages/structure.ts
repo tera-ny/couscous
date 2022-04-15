@@ -36,27 +36,18 @@ export const RouteFunctionStructure: FunctionDeclarationStructure = {
   ],
 };
 
-export const toSearchFunctionStructure: FunctionDeclarationStructure = {
-  kind: StructureKind.Function,
-  name: "toSearch",
-  parameters: [{ name: "searchParams", type: "URLSearchParams" }],
-  returnType: "string",
-  statements: (writer) => {
-    writer.writeLine(
-      'return searchParams.toString() ? "?" + searchParams.toString() : "";'
-    );
-  },
-};
-
 export const IdentityTypeStructure = (
-  routes: Route[]
-): TypeAliasDeclarationStructure => ({
-  kind: StructureKind.TypeAlias,
-  name: "Identity",
-  type: (writer) => {
-    routes.forEach((route, index) => {
-      writer.write(`"${route.identity}"`);
-      if (routes.length > index + 1) writer.write(" | ");
-    });
-  },
-});
+  routes: [Pick<Route, "identity">, ...Pick<Route, "identity">[]]
+): TypeAliasDeclarationStructure => {
+  if (!routes.length) throw "routes is empty";
+  return {
+    kind: StructureKind.TypeAlias,
+    name: "Identity",
+    type: (writer) => {
+      routes.forEach((route, index) => {
+        writer.write(`"${route.identity}"`);
+        if (routes.length > index + 1) writer.write(" | ");
+      });
+    },
+  };
+};
