@@ -7,7 +7,7 @@ test("RouteOption with snapshot", async (source) => {
   await source.save();
   await assertSnapshot(
     source.getFilePath(),
-    "./_snapshots/structure_test_routeoption.snapshot"
+    "_snapshots/structure_test_routeoption.snapshot"
   );
 });
 
@@ -24,6 +24,6 @@ test("IdentityType with snapshot", async (source) => {
   await source.save();
   await assertSnapshot(
     source.getFilePath(),
-    "./_snapshots/structure_test_identitytype.snapshot"
+    "_snapshots/structure_test_identitytype.snapshot"
   );
 });
