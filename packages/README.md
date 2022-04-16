@@ -6,10 +6,12 @@ Couscous is a utility tool for next.js that automatically generates route functi
 
 `deno run --allow-read --allow-write https://deno.land/x/couscous/index.ts utils/route/generated.ts`
 
-#### options
+### options
 
 - `-t <path>` tsconfig path. default `tsconfig.json`
 - `-r <path>` page root. default `pages`
+
+`deno run --allow-read --allow-write https://deno.land/x/couscous/index.ts src/utils/route/generated.ts -t configs/dev.tsconfig.json -r src/pages`
 
 ## Example
 
