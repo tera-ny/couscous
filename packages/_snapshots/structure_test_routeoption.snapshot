@@ -1,0 +1,4 @@
+interface RouteOption {
+  query?: { [key: string]: string };
+  fragment?: string;
+}

@@ -3,7 +3,7 @@ import { test } from "./_test_helper/fileSystem.ts";
 import { assertSnapshot } from "./_test_helper/equal.ts";
 import { addEntryOverloads } from "./generator.ts";
 
-test("addEntryOverloads", async (source) => {
+test("addEntryOverloads with snapshot", async (source) => {
   const constructor = source.addFunction({
     name: "route",
     kind: StructureKind.Function,
@@ -12,11 +12,13 @@ test("addEntryOverloads", async (source) => {
   addEntryOverloads(
     [
       { identity: "/fuga", template: "/fuga/", params: [] },
+      // single parameter
       {
         identity: "/hoge/[hoge]",
         template: "/hoge/${hoge}",
-        params: [{ name: "hoge", type: "param" }],
+        params: [{ name: "hoge", type: "single" }],
       },
+      // rest parameter
       {
         identity: "/piyo/[...slug]",
         template: '/piyo/${slug.join("/")}',
@@ -26,8 +28,17 @@ test("addEntryOverloads", async (source) => {
         identity: "/foo/[foo]/[...bar]",
         template: '/foo/${foo}/${bar.join("/")}',
         params: [
-          { name: "foo", type: "param" },
+          { name: "foo", type: "single" },
           { name: "bar", type: "rest", isOptional: false },
+        ],
+      },
+      // optional rest parameter
+      {
+        identity: "/foo/[foo]/[[...piyo]]",
+        template: '/foo/${foo}/${piyo.join("/")}',
+        params: [
+          { name: "foo", type: "single" },
+          { name: "bar", type: "rest", isOptional: true },
         ],
       },
     ],

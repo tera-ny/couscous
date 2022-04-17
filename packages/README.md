@@ -6,10 +6,12 @@ Couscous is a utility tool for next.js that automatically generates route functi
 
 `deno run --allow-read --allow-write https://deno.land/x/couscous/index.ts utils/route/generated.ts`
 
-#### options
+### options
 
 - `-t <path>` tsconfig path. default `tsconfig.json`
 - `-r <path>` page root. default `pages`
+
+`deno run --allow-read --allow-write https://deno.land/x/couscous/index.ts src/utils/route/generated.ts -t configs/dev.tsconfig.json -r src/pages`
 
 ## Example
 
@@ -25,14 +27,10 @@ Couscous is a utility tool for next.js that automatically generates route functi
 ```typescript:generated.ts
 interface RouteOption {
   query?: { [key: string]: string };
-  hash?: `#${string}`;
+  fragment?: string;
 }
 
 type Identity = "/" | "/users/[id]/" | "/api/hello/" | "/items/[items]/";
-
-function toSearch(searchParams: URLSearchParams): string {
-  return searchParams.toString() ? "?" + searchParams.toString() : "";
-}
 
 export function route(identity: "/", option?: RouteOption): string;
 export function route(
@@ -74,7 +72,7 @@ export function route(
   }
   const option = args[index] as RouteOption | undefined;
   const searchParams = new URLSearchParams(option?.query ?? {});
-  return `${path}${toSearch(searchParams)}${option?.hash}`;
+  return `${path}${searchParams.toString() && "?" + searchParams.toString()}${option?.fragment && "#" + option?.fragment}`;
 }
 
 ```

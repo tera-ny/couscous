@@ -16,6 +16,35 @@ Deno.test("convertToBase", () => {
   };
   const testCases: TestCase<typeof convertToBase>[] = [
     ["pages", { ...baseEntry, name: "index.ts", path: "pages/index.ts" }, "/"],
+    [
+      "pages",
+      { ...baseEntry, name: "user.ts", path: "pages/user.ts" },
+      "/user",
+    ],
+    [
+      "pages",
+      { ...baseEntry, name: "[id].ts", path: "pages/user/[id].ts" },
+      "/user/[id]",
+    ],
+    [
+      "pages",
+      { ...baseEntry, name: "index.ts", path: "pages/items/index.ts" },
+      "/items",
+    ],
+    [
+      "pages",
+      { ...baseEntry, name: "index.ts", path: "pages/items/[id]/index.ts" },
+      "/items/[id]",
+    ],
+    [
+      "pages",
+      {
+        ...baseEntry,
+        name: "index.ts",
+        path: "pages/items/[[...id]]/index.ts",
+      },
+      "/items/[[...id]]",
+    ],
   ];
   testCases.forEach((testcase) => {
     assertEquals(convertToBase(testcase[0], testcase[1]), testcase[2]);
@@ -26,7 +55,7 @@ Deno.test("convertToDynamicParam", () => {
   const testCases: TestCase<typeof convertToDynamicParam>[] = [
     ["", undefined],
     ["hoge", undefined],
-    ["[id]", { type: "param", name: "id" }],
+    ["[id]", { type: "single", name: "id" }],
     ["[...slug]", { type: "rest", name: "slug", isOptional: false }],
     ["[[...foo]]", { type: "rest", name: "foo", isOptional: true }],
   ];
@@ -71,8 +100,8 @@ Deno.test("convertToRoute", () => {
         isSymlink: false,
       },
       {
-        identity: "/fuga/",
-        template: "/fuga/",
+        identity: "/fuga",
+        template: "/fuga",
         params: [],
       },
     ],
@@ -86,8 +115,8 @@ Deno.test("convertToRoute", () => {
         isSymlink: false,
       },
       {
-        identity: "/fuga/",
-        template: "/fuga/",
+        identity: "/fuga",
+        template: "/fuga",
         params: [],
       },
     ],
@@ -101,8 +130,8 @@ Deno.test("convertToRoute", () => {
         isSymlink: false,
       },
       {
-        identity: "/fuga/[...slug]/",
-        template: '/fuga/${slug.join("/")}/',
+        identity: "/fuga/[...slug]",
+        template: '/fuga/${slug.join("/")}',
         params: [
           {
             type: "rest",

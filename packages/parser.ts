@@ -1,5 +1,5 @@
 import { convertToDynamicParam } from "./converter.ts";
-import { DynamicParam } from "./type.ts";
+import type { DynamicParam } from "./type/index.ts";
 
 export const parseToDynamicParams = (path: string) => {
   const results: DynamicParam[] = [];

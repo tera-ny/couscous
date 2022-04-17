@@ -4,7 +4,7 @@ import {
   TypeAliasDeclarationStructure,
   StructureKind,
 } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
-import { Route } from "./type.ts";
+import { Route, ParameterType } from "./type/index.ts";
 
 export const RouteOptionStructure: InterfaceDeclarationStructure = {
   kind: StructureKind.Interface,
@@ -16,11 +16,23 @@ export const RouteOptionStructure: InterfaceDeclarationStructure = {
       hasQuestionToken: true,
     },
     {
-      name: "hash",
-      type: "`#${string}`",
+      name: "fragment",
+      type: "string",
       hasQuestionToken: true,
     },
   ],
+};
+
+export const ParameterTypeStructure: TypeAliasDeclarationStructure = {
+  kind: StructureKind.TypeAlias,
+  name: "ParameterType",
+  type: [
+    ParameterType.Single,
+    ParameterType.Rest,
+    ParameterType.OptionalRest,
+    "RouteOption",
+    "undefined",
+  ].join(" | "),
 };
 
 export const RouteFunctionStructure: FunctionDeclarationStructure = {
@@ -31,32 +43,23 @@ export const RouteFunctionStructure: FunctionDeclarationStructure = {
     { name: "identity", type: "Identity" },
     {
       name: "...args",
-      type: "(string | string[] | RouteOption | undefined)[]",
+      type: "ParameterType[]",
     },
   ],
 };
 
-export const toSearchFunctionStructure: FunctionDeclarationStructure = {
-  kind: StructureKind.Function,
-  name: "toSearch",
-  parameters: [{ name: "searchParams", type: "URLSearchParams" }],
-  returnType: "string",
-  statements: (writer) => {
-    writer.writeLine(
-      'return searchParams.toString() ? "?" + searchParams.toString() : "";'
-    );
-  },
-};
-
 export const IdentityTypeStructure = (
-  routes: Route[]
-): TypeAliasDeclarationStructure => ({
-  kind: StructureKind.TypeAlias,
-  name: "Identity",
-  type: (writer) => {
-    routes.forEach((route, index) => {
-      writer.write(`"${route.identity}"`);
-      if (routes.length > index + 1) writer.write(" | ");
-    });
-  },
-});
+  routes: [Pick<Route, "identity">, ...Pick<Route, "identity">[]]
+): TypeAliasDeclarationStructure => {
+  if (!routes.length) throw "routes is empty";
+  return {
+    kind: StructureKind.TypeAlias,
+    name: "Identity",
+    type: (writer) => {
+      routes.forEach((route, index) => {
+        writer.write(`"${route.identity}"`);
+        if (routes.length > index + 1) writer.write(" | ");
+      });
+    },
+  };
+};

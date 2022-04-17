@@ -1,15 +1,17 @@
 import type { WalkEntry } from "https://deno.land/std@0.130.0/fs/mod.ts";
 import { parse as parsePath } from "https://deno.land/std@0.130.0/path/mod.ts";
-import type { Route, DynamicParam } from "./type.ts";
+import type { Route, DynamicParam } from "./type/index.ts";
 import { parseToDynamicParams } from "./parser.ts";
 
 export const convertToBase = (root: string, entry: WalkEntry): string => {
   const parsed = parsePath(entry.path);
   const base = [
     parsed.dir.replace(new RegExp(`^${root}`), ""),
-    parsed.name !== "index" ? `${parsed.name}/` : "",
-  ].join("/");
-  return base;
+    parsed.name !== "index" ? `${parsed.name}` : "",
+  ]
+    .filter((val, index) => !index || val.length)
+    .join("/");
+  return base ? base : "/";
 };
 
 export const convertToDynamicParam = (
@@ -34,7 +36,7 @@ export const convertToDynamicParam = (
   const key = name.match(/^\[(\w+)\]$/);
   if (key) {
     return {
-      type: "param",
+      type: "single",
       name: key[1],
     };
   } else {
