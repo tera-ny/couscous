@@ -4,7 +4,7 @@ import {
   TypeAliasDeclarationStructure,
   StructureKind,
 } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
-import { Route } from "./type.ts";
+import { Route, ParameterType } from "./type/index.ts";
 
 export const RouteOptionStructure: InterfaceDeclarationStructure = {
   kind: StructureKind.Interface,
@@ -23,6 +23,16 @@ export const RouteOptionStructure: InterfaceDeclarationStructure = {
   ],
 };
 
+export const ParameterTypeStructure: TypeAliasDeclarationStructure = {
+  kind: StructureKind.TypeAlias,
+  name: "ParameterType",
+  type: [
+    ParameterType.Single,
+    ParameterType.Rest,
+    ParameterType.OptionalRest,
+  ].join(" | "),
+};
+
 export const RouteFunctionStructure: FunctionDeclarationStructure = {
   kind: StructureKind.Function,
   name: "route",
@@ -31,7 +41,7 @@ export const RouteFunctionStructure: FunctionDeclarationStructure = {
     { name: "identity", type: "Identity" },
     {
       name: "...args",
-      type: "(string | string[] | RouteOption | undefined)[]",
+      type: "ParameterType[]",
     },
   ],
 };

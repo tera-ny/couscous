@@ -26,7 +26,7 @@ Deno.test("convertToDynamicParam", () => {
   const testCases: TestCase<typeof convertToDynamicParam>[] = [
     ["", undefined],
     ["hoge", undefined],
-    ["[id]", { type: "param", name: "id" }],
+    ["[id]", { type: "single", name: "id" }],
     ["[...slug]", { type: "rest", name: "slug", isOptional: false }],
     ["[[...foo]]", { type: "rest", name: "foo", isOptional: true }],
   ];

@@ -15,7 +15,7 @@ test("addEntryOverloads with snapshot", async (source) => {
       {
         identity: "/hoge/[hoge]",
         template: "/hoge/${hoge}",
-        params: [{ name: "hoge", type: "param" }],
+        params: [{ name: "hoge", type: "single" }],
       },
       {
         identity: "/piyo/[...slug]",
@@ -26,7 +26,7 @@ test("addEntryOverloads with snapshot", async (source) => {
         identity: "/foo/[foo]/[...bar]",
         template: '/foo/${foo}/${bar.join("/")}',
         params: [
-          { name: "foo", type: "param" },
+          { name: "foo", type: "single" },
           { name: "bar", type: "rest", isOptional: false },
         ],
       },

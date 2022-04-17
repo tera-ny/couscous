@@ -1,8 +1,5 @@
 import { FunctionDeclaration } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
-import type { Route } from "./type.ts";
-
-const toType = (type: "param" | "rest") =>
-  type === "param" ? "string" : "string[]";
+import { Route, ParameterType } from "./type/index.ts";
 
 export const addEntryOverloads = (
   routes: Route[],
@@ -14,7 +11,7 @@ export const addEntryOverloads = (
         { name: "identity", type: `"${route.identity}"` },
         ...route.params.map((parameter) => ({
           name: parameter.name,
-          type: toType(parameter.type),
+          type: ParameterType.toType(parameter),
         })),
         {
           name: "option",
@@ -38,17 +35,12 @@ export const addRoutesHandler = (
       routes.forEach((route) => {
         writer.writeLine(`case "${route.identity}":`);
         writer.block(() => {
-          route.params.forEach((key, index) => {
-            switch (key.type) {
-              case "param":
-                writer.writeLine(`const ${key.name} = args[${index}];`);
-                break;
-              case "rest":
-                writer.writeLine(
-                  `const ${key.name} = args[${index}] as string[]`
-                );
-                break;
-            }
+          route.params.forEach((param, index) => {
+            writer.writeLine(
+              `const ${param.name} = args[${index}] as ${ParameterType.toType(
+                param
+              )};`
+            );
           });
           writer.writeLine("path = `" + route.template + "`;");
           const optionIndex = route.params.length;

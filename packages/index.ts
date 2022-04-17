@@ -9,7 +9,7 @@ import { parse as parseArg } from "https://deno.land/std@0.130.0/flags/mod.ts";
 import { walkAround } from "./visitor.ts";
 import { convertToRoute } from "./converter.ts";
 import { addEntryOverloads, addRoutesHandler } from "./generator.ts";
-import { Route, isNonEmpty } from "./type.ts";
+import { Route, isNonEmpty } from "./type/index.ts";
 import { ensureFile } from "https://deno.land/std@0.130.0/fs/mod.ts";
 import {
   RouteOptionStructure,
