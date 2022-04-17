@@ -15,6 +15,7 @@ import {
   RouteOptionStructure,
   RouteFunctionStructure,
   IdentityTypeStructure,
+  ParameterTypeStructure,
 } from "./structure.ts";
 import {
   brightGreen,
@@ -34,6 +35,10 @@ const addRouteOption = (source: SourceFile) => {
   source.addInterface(RouteOptionStructure);
 };
 
+const addParameterType = (source: SourceFile) => {
+  source.addTypeAlias(ParameterTypeStructure);
+};
+
 const addIdentityType = (routes: Route[], source: SourceFile) => {
   if (!isNonEmpty(routes)) return;
   source.addTypeAlias(IdentityTypeStructure(routes));
@@ -48,6 +53,7 @@ const addRouteFunction = (routes: Route[], source: SourceFile) => {
 
 const register = (routes: Route[], source: SourceFile) => {
   addRouteOption(source);
+  addParameterType(source);
   addIdentityType(routes, source);
   addRouteFunction(routes, source);
 };

@@ -12,11 +12,13 @@ test("addEntryOverloads with snapshot", async (source) => {
   addEntryOverloads(
     [
       { identity: "/fuga", template: "/fuga/", params: [] },
+      // single parameter
       {
         identity: "/hoge/[hoge]",
         template: "/hoge/${hoge}",
         params: [{ name: "hoge", type: "single" }],
       },
+      // rest parameter
       {
         identity: "/piyo/[...slug]",
         template: '/piyo/${slug.join("/")}',
@@ -28,6 +30,15 @@ test("addEntryOverloads with snapshot", async (source) => {
         params: [
           { name: "foo", type: "single" },
           { name: "bar", type: "rest", isOptional: false },
+        ],
+      },
+      // optional rest parameter
+      {
+        identity: "/foo/[foo]/[[...piyo]]",
+        template: '/foo/${foo}/${piyo.join("/")}',
+        params: [
+          { name: "foo", type: "single" },
+          { name: "bar", type: "rest", isOptional: true },
         ],
       },
     ],

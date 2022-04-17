@@ -30,6 +30,8 @@ export const ParameterTypeStructure: TypeAliasDeclarationStructure = {
     ParameterType.Single,
     ParameterType.Rest,
     ParameterType.OptionalRest,
+    "RouteOption",
+    "undefined",
   ].join(" | "),
 };
 
