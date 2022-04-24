@@ -1,1 +1,0 @@
-type ParameterType = string | [string, ...string[]] | string[] | RouteOption | undefined;
