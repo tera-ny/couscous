@@ -1,0 +1,3 @@
+export const snapshot = {};
+
+snapshot[`addEntryOverloads with snapshot 1`] = `'function route(identity: "/fuga", option?: RouteOption): string;\\nfunction route(identity: "/hoge/[hoge]", hoge: string, option?: RouteOption): string;\\nfunction route(identity: "/piyo/[...slug]", slug: [string, ...string[]], option?: RouteOption): string;\\nfunction route(identity: "/foo/[foo]/[...bar]", foo: string, bar: [string, ...string[]], option?: RouteOption): string;\\nfunction route(identity: "/foo/[foo]/[[...piyo]]", foo: string, bar: string[], option?: RouteOption): string;\\nfunction route() {\\n  return ""\\n}\\n'`;

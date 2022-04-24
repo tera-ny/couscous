@@ -1,0 +1,7 @@
+export const snapshot = {};
+
+snapshot[`RouteOption with snapshot 1`] = `"interface RouteOption {\\n  query?: { [key: string]: string };\\n  fragment?: string;\\n}\\n"`;
+
+snapshot[`ParameterType with snapshot 1`] = `"type ParameterType = string | [string, ...string[]] | string[] | RouteOption | undefined;\\n"`;
+
+snapshot[`IdentityType with snapshot 1`] = `'type Identity = "foo" | "bar" | "hoge" | "piyo" | "fuga/\${id}";\\n'`;
