@@ -4,27 +4,23 @@ import {
   IdentityTypeStructure,
   ParameterTypeStructure,
 } from "./structure.ts";
-import { assertSnapshot } from "./_test_helper/equal.ts";
+import { assertSnapshot } from "https://deno.land/std@0.136.0/testing/snapshot.ts";
 
-test("RouteOption with snapshot", async (source) => {
+test("RouteOption with snapshot", async (source, ctx) => {
   source.addInterface(RouteOptionStructure);
   await source.save();
-  await assertSnapshot(
-    source.getFilePath(),
-    "_snapshots/structure_test_routeoption.snapshot"
-  );
+  const target = await Deno.readTextFile(source.getFilePath());
+  await assertSnapshot(ctx, target);
 });
 
-test("ParameterType with snapshot", async (source) => {
+test("ParameterType with snapshot", async (source, ctx) => {
   source.addTypeAlias(ParameterTypeStructure);
   await source.save();
-  await assertSnapshot(
-    source.getFilePath(),
-    "_snapshots/structure_test_parametertype.snapshot"
-  );
+  const target = await Deno.readTextFile(source.getFilePath());
+  await assertSnapshot(ctx, target);
 });
 
-test("IdentityType with snapshot", async (source) => {
+test("IdentityType with snapshot", async (source, ctx) => {
   source.addTypeAlias(
     IdentityTypeStructure([
       { identity: "foo" },
@@ -35,8 +31,6 @@ test("IdentityType with snapshot", async (source) => {
     ])
   );
   await source.save();
-  await assertSnapshot(
-    source.getFilePath(),
-    "_snapshots/structure_test_identitytype.snapshot"
-  );
+  const target = await Deno.readTextFile(source.getFilePath());
+  await assertSnapshot(ctx, target);
 });

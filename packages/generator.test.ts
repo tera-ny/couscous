@@ -1,9 +1,9 @@
 import { StructureKind } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
 import { test } from "./_test_helper/fileSystem.ts";
-import { assertSnapshot } from "./_test_helper/equal.ts";
+import { assertSnapshot } from "https://deno.land/std@0.136.0/testing/snapshot.ts";
 import { addEntryOverloads } from "./generator.ts";
 
-test("addEntryOverloads with snapshot", async (source) => {
+test("addEntryOverloads with snapshot", async (source, ctx) => {
   const constructor = source.addFunction({
     name: "route",
     kind: StructureKind.Function,
@@ -45,8 +45,6 @@ test("addEntryOverloads with snapshot", async (source) => {
     constructor
   );
   await source.save();
-  await assertSnapshot(
-    source.getFilePath(),
-    "_snapshots/generator_test_case0.snapshot"
-  );
+  const target = await Deno.readTextFile(source.getFilePath());
+  await assertSnapshot(ctx, target);
 });
