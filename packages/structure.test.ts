@@ -4,7 +4,7 @@ import {
   IdentityTypeStructure,
   ParameterTypeStructure,
 } from "./structure.ts";
-import { assertSnapshot } from "https://deno.land/std/testing/snapshot.ts";
+import { assertSnapshot } from "https://deno.land/std@0.136.0/testing/snapshot.ts";
 
 test("RouteOption with snapshot", async (source, ctx) => {
   source.addInterface(RouteOptionStructure);
