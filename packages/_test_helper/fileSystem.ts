@@ -4,16 +4,7 @@ import {
   ManipulationSettings,
   IndentationText,
 } from "https://deno.land/x/ts_morph@14.0.0/mod.ts";
-
-export const withDir = async (
-  cb: (tempDir: string) => void | Promise<void>
-) => {
-  const tempDir = await Deno.makeTempDir({
-    prefix: "deno_couscous_test_",
-  });
-  await cb(tempDir);
-  await Deno.remove(tempDir, { recursive: true });
-};
+import { withDir } from "https://deno.land/x/barnacle@0.0.1/mod.ts";
 
 export const withSource = (
   cb: (tempSrc: SourceFile) => void | Promise<void>,
